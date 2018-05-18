@@ -1,0 +1,56 @@
+package jp.ac.titech.itpro.sdl.rotationresist;
+
+import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.util.AttributeSet;
+import android.util.Log;
+import android.view.View;
+
+class RotationView extends View {
+    private final static String TAG = "RotationView";
+
+    private double direction = 0;
+    private final Paint paint = new Paint();
+
+    public RotationView(Context context) {
+        this(context, null);
+    }
+
+    public RotationView(Context context, AttributeSet attrs) {
+        this(context, attrs, 0);
+    }
+
+    public RotationView(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+    }
+
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+        Log.d(TAG, "onSizeChanged: w=" + w + " h=" + h);
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+        int w = canvas.getWidth();
+        int h = canvas.getHeight();
+        int cx = w / 2, cy = h / 2;
+        int r = (cx < cy ? cx : cy) - 20;
+        paint.setColor(Color.LTGRAY);
+        canvas.drawCircle(cx, cy, r, paint);
+        paint.setColor(Color.BLUE);
+        canvas.drawCircle(cx, cy, 20, paint);
+        paint.setStrokeWidth(10);
+        float x = (float) (cx + r * Math.cos(direction));
+        float y = (float) (cy + r * Math.sin(direction));
+        canvas.drawLine(cx, cy, x, y, paint);
+    }
+
+    void setDirection(double th) {
+        direction = th - Math.PI / 2;
+        invalidate();
+    }
+}
